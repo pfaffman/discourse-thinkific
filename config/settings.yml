@@ -1,0 +1,10 @@
+plugins:
+  discourse_thinkific_enabled:
+    default: true
+    client: true
+  thinkific_base_url:
+    default: ""
+    client: true
+  thinkific_jwt_auth_token:
+    default: ""
+    client: true

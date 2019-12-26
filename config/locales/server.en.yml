@@ -1,0 +1,5 @@
+en:
+  site_settings:
+    discourse_thinkific_enabled: "Enable discourse-thinkific plugin"
+    thinkific_base_url: "Base Url for Thinkific login"
+    thinkific_jwt_auth_token: "jwt token for Thinkific login"
