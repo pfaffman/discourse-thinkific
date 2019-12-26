@@ -21,20 +21,22 @@ after_initialize do
       payload = JWT.encode({
         :iat   => iat,
         :jti   => "#{iat}/#{SecureRandom.hex(18)}",
-        :first_name  => user.name.split(' ').first || user.username,
-        :last_name => user.name.split(' ').last || user.username,
+        :first_name  => user.name ? user.name.split(' ').first : user.username,
+        :last_name => user.name ? user.name.split(' ').last : user.username,
         :email => user.email,
-      },SiteSetting.thinkific_jwt_auth_token)
+                           },
+                           SiteSetting.thinkific_jwt_auth_token
+                          )
       params = {
         :jwt => payload,
         :return_to => Discourse.base_url
       }
-
-      "#{base_url}?#{params.to_query}"
+      puts "redirecting to: #{base_url.chomp('/')}/?#{params.to_query}"
+      "#{base_url.chomp('/')}/api/sso/v2/sso/jwt?#{params.to_query}"
     end
 
     def login(user)
-      cookies[:thinkific_redirect] = generate_thinkific_url(user) 
+      cookies[:thinkific_redirect] = generate_thinkific_url(user)
       super
     end
 
