@@ -31,7 +31,6 @@ after_initialize do
         :jwt => payload,
         :return_to => Discourse.base_url
       }
-      puts "redirecting to: #{base_url.chomp('/')}/?#{params.to_query}"
       "#{base_url.chomp('/')}/api/sso/v2/sso/jwt?#{params.to_query}"
     end
 
