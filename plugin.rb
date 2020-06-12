@@ -12,10 +12,16 @@ PLUGIN_NAME ||= 'DiscourseThinkific'
 
 after_initialize do
 
+  add_to_serializer(:current_user, :thinkific_redirect_url, false) do
+    if object.present?
+      SessionControllerExtension.generate_thinkific_url(object)
+    end
+  end
+
   module SessionControllerExtension
-    def generate_thinkific_url(user)
+    def self.generate_thinkific_url(user)
       base_url = SiteSetting.thinkific_base_url
-      return "" if(!valid_url?(base_url) || SiteSetting.thinkific_jwt_auth_token.empty?)
+      return "" if(!self.valid_url?(base_url) || SiteSetting.thinkific_jwt_auth_token.empty?)
 
       iat = Time.now.to_i
       payload = JWT.encode({
@@ -35,11 +41,12 @@ after_initialize do
     end
 
     def login(user)
-      cookies[:thinkific_redirect] = generate_thinkific_url(user)
+      cookies[:thinkific_redirect] = self.class.generate_thinkific_url(user)
       super
     end
 
-    def valid_url?(url)
+    private
+    def self.valid_url?(url)
       uri = URI.parse(url)
       uri.is_a?(URI::HTTP) && !uri.host.nil?
     rescue URI::InvalidURIError
@@ -48,7 +55,7 @@ after_initialize do
   end
 
   class ::SessionController
-    prepend SessionControllerExtension
+    prepend SessionControllerExtension if SiteSetting.discourse_thinkific_enabled
   end
 
 end
