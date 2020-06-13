@@ -41,11 +41,10 @@ after_initialize do
     end
 
     def login(user)
-      cookies[:thinkific_redirect] = self.class.generate_thinkific_url(user)
+      cookies[:thinkific_redirect] = self.generate_thinkific_url(user)
       super
     end
 
-    private
     def self.valid_url?(url)
       uri = URI.parse(url)
       uri.is_a?(URI::HTTP) && !uri.host.nil?
@@ -54,8 +53,6 @@ after_initialize do
     end
   end
 
-  class ::SessionController
-    prepend SessionControllerExtension if SiteSetting.discourse_thinkific_enabled
-  end
+  ::SessionController.prepend SessionControllerExtension if SiteSetting.discourse_thinkific_enabled
 
 end
