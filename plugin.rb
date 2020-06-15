@@ -41,7 +41,7 @@ after_initialize do
     end
 
     def login(user)
-      cookies[:thinkific_redirect] = self.generate_thinkific_url(user)
+      cookies[:thinkific_redirect] = SessionControllerExtension.generate_thinkific_url(user)
       super
     end
 
