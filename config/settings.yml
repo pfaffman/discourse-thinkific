@@ -8,3 +8,6 @@ plugins:
   thinkific_jwt_auth_token:
     default: ""
     client: true
+  thinkific_return_to:
+    default: "enrollments"
+    client: true

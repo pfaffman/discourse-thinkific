@@ -3,8 +3,8 @@
 # name: discourse-thinkific
 # about: Redirects to thinkific url to login to thinkific and redirects back to discourse
 # version: 0.1
-# authors: fzngagan
-# url: https://github.com/fzngagan
+# authors: pfaffman, fzngagan
+# url: https://github.com/pfaffman/discourse-thinkific
 
 enabled_site_setting :discourse_thinkific_enabled
 
@@ -14,6 +14,7 @@ after_initialize do
 
   add_to_serializer(:current_user, :thinkific_redirect_url, false) do
     if object.present?
+      puts "Adding to serializer"
       SessionControllerExtension.generate_thinkific_url(object)
     end
   end
@@ -21,6 +22,7 @@ after_initialize do
   module SessionControllerExtension
     def self.generate_thinkific_url(user)
       base_url = SiteSetting.thinkific_base_url
+      puts "generate_thinkific_url(#{user})"
       return "" if(!self.valid_url?(base_url) || SiteSetting.thinkific_jwt_auth_token.empty?)
 
       iat = Time.now.to_i
@@ -35,12 +37,13 @@ after_initialize do
                           )
       params = {
         :jwt => payload,
-        :return_to => Discourse.base_url
+        :return_to => SiteSetting.thinkific_return_to
       }
       "#{base_url.chomp('/')}/api/sso/v2/sso/jwt?#{params.to_query}"
     end
 
     def login(user)
+      puts "Calling login"
       cookies[:thinkific_redirect] = SessionControllerExtension.generate_thinkific_url(user)
       super
     end
