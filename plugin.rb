@@ -37,7 +37,7 @@ after_initialize do
                           )
       params = {
         :jwt => payload,
-        :return_to => SiteSetting.thinkific_return_to
+        :return_to => "#{SiteSetting.thinkific_base_url}/#{SiteSetting.thinkific_return_to}"
       }
       "#{base_url.chomp('/')}/api/sso/v2/sso/jwt?#{params.to_query}"
     end
